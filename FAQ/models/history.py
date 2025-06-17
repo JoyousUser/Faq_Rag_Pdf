@@ -3,10 +3,8 @@ from django.contrib.auth.models import User
 
 class History(models.Model):
 
-    name = models.CharField(max_length=255)
-    #à discuter
-    details = models.TextField()
-    #c'est l'url visitée ?
+    visited = models.CharField(max_length=255)
+    # à récupérer depuis la view avec : request.get_full_path()
     faq_id = models.ForeignKey('faq.Faq', on_delete=models.CASCADE, related_name='histories')
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
