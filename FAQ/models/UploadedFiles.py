@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-class UploadedFiles:
+class UploadedFiles(models.Model):
 
     file_path = models.FileField(upload_to='uploaded_files/')
     #upload le fichier vers le dossier MEDIA_ROOT/uploaded_files/ et enregistre son chemin relatif en bdd
