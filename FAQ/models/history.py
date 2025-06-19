@@ -5,7 +5,7 @@ class History(models.Model):
 
     visited = models.CharField(max_length=255)
     # à récupérer depuis la view avec : request.get_full_path()
-    faq_id = models.ForeignKey('faq.Faq', on_delete=models.CASCADE, related_name='histories')
+    faq_id = models.ForeignKey('FAQ.Faq', on_delete=models.CASCADE, related_name='histories')
     visited_by = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
