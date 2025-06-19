@@ -15,12 +15,12 @@ classDiagram
         +setters()
     }
     class HISTORY {
-        %% Logs
+        History or visit_logs
         +int id
-        +string name
-        +string detail`
+        +string visited
+        +string detail
         +int faq_id
-        +USER created_by
+        +USER visited_by
         +DateTime created_at
 
         +getters()
@@ -44,7 +44,7 @@ classDiagram
         +int id
         +string file_path
         +Datetime created_at
-        +User user_uploader
+        +USER created_by
 
         +getters()
         +setters()
