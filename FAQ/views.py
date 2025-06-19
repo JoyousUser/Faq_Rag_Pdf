@@ -6,8 +6,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
 from rest_framework import authentication
-from .serializers import UserSerializer
-
+from .serializers import UserSerializer, FaqSerializer, UploadedFilesSerializer
+from .models import Faq, UploadedFiles
 # Create your views here.
 
 
@@ -40,4 +40,23 @@ class LogoutView(APIView):
     def post(self, request):
         request.user.auth_token.delete()
         return Response(status=status.HTTP_200_OK)
+    
+class FaqViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows faqs to be viewed or edited.
+    """
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.TokenAuthentication]
+    queryset = Faq.objects.all()
+    serializer_class = FaqSerializer
+
+class UploadedFilesViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows faqs to be viewed or edited.
+    """
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.TokenAuthentication]
+    queryset = UploadedFiles.objects.all()
+    serializer_class = UploadedFilesSerializer
+
 
