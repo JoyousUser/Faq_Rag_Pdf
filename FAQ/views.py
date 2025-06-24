@@ -7,10 +7,7 @@ from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
 from rest_framework import authentication
 from .serializers import UserSerializer, FaqSerializer, UploadedFilesSerializer
-from .models import Faq, UploadedFiles
-# Create your views here.
-
-
+from .models import Faq, UploadedFiles, History
 
 class UserViewSet(viewsets.ModelViewSet):
     """
@@ -18,20 +15,23 @@ class UserViewSet(viewsets.ModelViewSet):
     """
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
     authentication_classes = [authentication.TokenAuthentication]
+    def create(self, request):
+        user = User.objects.create_user(username=request.data.get('username'), password=request.data.get('password'))
+        user.save()
+        token = Token.objects.create(user=user)
+        return Response({'token': token.key})
 
 class LoginView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
-
+    permission_classes = [permissions.AllowAny]
     def post(self, request):
         username = request.data.get('username')
         password = request.data.get('password')
         user = authenticate(username=username, password=password)
         if user:
-            token = Token.objects.get_or_create(user=user)
-            print(token[0])
-            return Response({'token': token[0].key})
+            token = Token.objects.get_or_create(user=user)[0]
+            return Response({'token': token.key})
         return Response({'error': 'Invalid Credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
 class LogoutView(APIView):
@@ -39,7 +39,7 @@ class LogoutView(APIView):
     authentication_classes = [authentication.TokenAuthentication]
     def post(self, request):
         request.user.auth_token.delete()
-        return Response(status=status.HTTP_200_OK)
+        return Response(data={'message': 'Logged out successfully'},status=status.HTTP_200_OK)    
     
 class FaqViewSet(viewsets.ModelViewSet):
     """
@@ -49,6 +49,18 @@ class FaqViewSet(viewsets.ModelViewSet):
     authentication_classes = [authentication.TokenAuthentication]
     queryset = Faq.objects.all()
     serializer_class = FaqSerializer
+
+    def create(self, request):
+        user = request.user
+        faq = Faq.objects.create(author=user, question=request.data.get('question'), answer=request.data.get('answer'), generation=request.data.get('generation'))
+        serializer = FaqSerializer(faq, context={'request': request})
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+    def list(self, request):
+        faqs = Faq.objects.all()
+        serializer = FaqSerializer(faqs, many=True, context={'request': request})
+        return Response(serializer.data)
+    
 
 class UploadedFilesViewSet(viewsets.ModelViewSet):
     """
