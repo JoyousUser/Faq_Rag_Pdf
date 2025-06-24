@@ -11,7 +11,5 @@ router.register(r'uploadedfiles', UploadedFilesViewSet)
 urlpatterns = [
     path('login/', LoginView.as_view()),
     path('logout/', LogoutView.as_view()),
-    # path('users/', UserViewSet.as_view({'get': 'list'})),
-    # path('faqs/', FaqViewSet.as_view({'get': 'list', 'post': 'create'})),
     path('', include(router.urls)),
 ]
