@@ -4,14 +4,32 @@ from rest_framework import serializers
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
+    faqs = serializers.HyperlinkedRelatedField(
+        many=True,
+        read_only=True,
+        view_name='faq-detail',
+        source='faq_set',
+        
+    )
     class Meta:
         model = User    
-        fields = ['id', 'url', 'username', 'first_name', 'last_name', 'email', 'is_staff']
+        fields = ['id', 'url', 'username', 'first_name', 'last_name', 'email', 'is_staff', 'faqs']
+    # json example of a user
+    # {
+    #     "id": 1,
+    #     "username": "testuser",
+    #     "password": "testuser",
+    #     "first_name": "",
+    #     "last_name": "",
+    #     "email": "test@example.com",
+    #     "is_staff": false
+    # }
+    
 
 class FaqSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Faq
-        fields = ['id', 'url', 'author', 'created_at', 'updated_at', 'question', 'answer', 'generation']
+        fields = ['author', 'updated_at', 'created_at', 'question', 'answer', 'generation']
     # json example of an FAQ
     # {
     #     "id": 1,
@@ -24,7 +42,7 @@ class FaqSerializer(serializers.HyperlinkedModelSerializer):
 class UploadedFilesSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = UploadedFiles
-        fields = ['id', 'url', 'file_path', 'created_at', 'created_by']
+        fields = ['file_path', 'created_at', 'created_by']
 
 class HistorySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
