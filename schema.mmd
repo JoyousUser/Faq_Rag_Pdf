@@ -1,0 +1,74 @@
+classDiagram
+    HISTORY --|> USER : contains
+    USER --|> FAQ : author
+    UploadedFiles --|> USER : uploaded_by
+    HISTORY --|> FAQ : contains
+    BaseFaqGenerator --|> AiFaqGenerator : extends
+    class USER {
+        +int id
+        +string username
+        +string password
+        +string role_id
+        +DateTime created_at
+
+        +getters()
+        +setters()
+    }
+    class HISTORY {
+        History or visit_logs
+        +int id
+        +string visited
+        +string detail
+        +int faq_id
+        +USER visited_by
+        +DateTime created_at
+
+        +getters()
+        +setters()
+    }
+    class FAQ {
+        +int id
+        +string question
+        +string answer
+        +bool ai_generated
+        +bool validated
+        +USER author
+        +DateTime created_at
+        +DateTime updated_at
+
+        +getters()
+        +setters()
+        +validators()
+    }
+    class UploadedFiles{
+        +int id
+        +string file_path
+        +Datetime created_at
+        +USER created_by
+
+        +getters()
+        +setters()
+    }
+    
+    class Serializer{
+        Serializer intégré au 
+        toolkit DRF Django REST Framework
+        +serialize() 
+    }
+
+    class BaseFaqGenerator{
+        +string model_name
+        +string ai_prompt
+        
+        
+        +getters()
+        +setters()
+    }
+
+    class AiFaqGenerator{
+        +string model_name
+        +string ai_prompt
+
+        +getters()
+        +setters()
+    }
