@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from .models import Faq, UploadedFiles, History
+from FAQ.models import Faq, UploadedFiles, History
 from rest_framework import serializers
 
 

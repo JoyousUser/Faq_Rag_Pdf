@@ -6,8 +6,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
 from rest_framework import authentication
-from .serializers import UserSerializer, FaqSerializer, UploadedFilesSerializer
-from .models import Faq, UploadedFiles, History
+from FAQ.serializers import UserSerializer, FaqSerializer, UploadedFilesSerializer
+from FAQ.models import Faq, UploadedFiles, History
 
 class UserViewSet(viewsets.ModelViewSet):
     """
