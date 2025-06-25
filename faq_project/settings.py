@@ -53,7 +53,6 @@ INSTALLED_APPS = [
     'FAQ',
     'rest_framework',
     'rest_framework.authtoken',
-    'FAQ.apps.FaqConfig',
     'rest_framework',
     'social_django'
 ]
