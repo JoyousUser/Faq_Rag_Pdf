@@ -123,7 +123,7 @@ AUTHENTICATION_BACKENDS = [
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = config('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY')
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = config('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET')
-LOGIN_REDIRECT_URL = '/'    # TODO routes à changer quand on aura nos vues (les vraies, les templates)
+LOGIN_REDIRECT_URL = '/api/token/google/'    # TODO routes à changer quand on aura nos vues (les vraies, les templates)
 LOGOUT_REDIRECT_URL = '/'
 
 SIMPLE_JWT = {
