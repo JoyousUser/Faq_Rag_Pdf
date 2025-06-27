@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
-from .models import Faq, History
+from .models import Faq, History, UploadedFiles
 
 # Create your tests here.
 class FaqTestCase(TestCase):
@@ -28,15 +28,19 @@ class HistoryTestCase(TestCase):
 
     def test_history_creation(self):
         """Test that a History object can be created and retrieved."""
-        print('History Creation')
         history = History.objects.get(visited='http://testserver')
         self.assertEqual(history.visited_by.username, 'testuser')
         self.assertEqual(history.faq_id.question, 'What is Django?')
-    
-class UploadedFilesTestCase(TestCase):
-    """Test case for the UploadedFiles model."""
-    pass
 
-class VisitLogTestCase(TestCase):
-    """Test case for the VisitLog model."""
-    pass
+class FilesTestCase(TestCase):
+    """ Test case for UploadedFiles model"""
+    # create user for testing
+    def setUp(self):
+        user = User.objects.create_user(username='testuser', password='testpass')
+        file = UploadedFiles.objects.create(file_path='/static/uploaded/pdf_files/', created_by=user)
+    
+    def test_uploaded_file_creation(self):
+        """Test that a UploadedFiles object can be created and retrieved."""
+        file = UploadedFiles.objects.get(file_path='/static/uploaded/pdf_files/')
+        self.assertEqual(file.created_by.username, 'testuser')
+        
