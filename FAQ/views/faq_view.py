@@ -26,12 +26,11 @@ class FaqViewSet(viewsets.ModelViewSet):
         serializer = FaqSerializer(faq, context={'request': request})
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-"""
-Méthode perform_create peut être simplifiée :
-def perform_create(self, serializer):
-    serializer.save(author=self.request.user)
-    
-→ Ce code :
-    utilise le serializer comme Django/DRF le souhaite,
-    affecte correctement l’auteur via request.user.
-"""
+
+# Méthode perform_create peut être simplifiée :
+# def perform_create(self, serializer):
+#     serializer.save(author=self.request.user)
+#
+# → Ce code :
+#     utilise le serializer comme Django/DRF le souhaite,
+#     affecte correctement l’auteur via request.user.

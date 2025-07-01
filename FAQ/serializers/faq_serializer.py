@@ -1,4 +1,3 @@
-from django.contrib.auth.models import User
 from FAQ.models import Faq
 from rest_framework import serializers
 
@@ -14,3 +13,5 @@ class FaqSerializer(serializers.HyperlinkedModelSerializer):
     #     "answer": "Django is a high-level Python Web framework that encourages rapid development and clean, pragmatic design.",
     #     "generation": "Manual"
     # }
+
+# Suggestion : mettre certains champs dans read_only_fields plutôt que fields (pour 'author', 'created_at', 'updated_at' par exemple)
