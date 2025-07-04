@@ -27,8 +27,8 @@ class UploadedFilesViewSet(viewsets.ModelViewSet):
         return [permission() for permission in permission_classes]
     
     def perform_create(self, request):
-        user = request.user
-        uploaded_file = request.FILES.get('file_path')
+        user = self.request.user
+        uploaded_file = self.request.FILES.get('file_path')
         if not uploaded_file:
             return Response({'error': 'No file provided'}, status=status.HTTP_400_BAD_REQUEST)
         
@@ -36,4 +36,3 @@ class UploadedFilesViewSet(viewsets.ModelViewSet):
         serializer = UploadedFilesSerializer(file, context={'request': request})
          
         return Response(status=status.HTTP_201_CREATED)
-
