@@ -1,13 +1,35 @@
 from django.db import models
 from langchain.prompts import PromptTemplate
 from langchain_community.llms.ollama import Ollama 
-import PyPDF2, json
+import PyPDF2, json, re
 
 class FAQGenerator:
     model_name = 'llama3'
     ai_prompt = PromptTemplate(
     template=(
-        """You are a french AI assistant that extracts useful FAQs from a given text. Your task is to read the following content and generate a list of frequently asked questions (FAQs) with concise answers. Each FAQ should be a JSON object with the following format:{{"question": "A common or important question based on the text.","answer": "A concise, informative answer drawn from the text."}} Return the result as a JSON array of FAQ objects. Here is the input text: {text} Please return only the JSON array of FAQs, with no explanation or additional commentary."""
+               """
+                Tu es une IA qui NE PARLE QU’EN FRANÇAIS et qui EXTRAYE uniquement des FAQ d’un texte fourni.
+
+                Voici ce que tu dois faire :
+                - Lis le texte ci-dessous.
+                - Génère exactement 10 objets JSON représentant des FAQ.
+                - Chaque objet doit avoir cette structure (et rien d'autre) :
+
+                {{
+                "question": "Une question fréquente basée sur le texte.",
+                "answer": "Une réponse concise et informative tirée du texte."
+                }}
+
+                TRÈS IMPORTANT : Tu dois renvoyer UNIQUEMENT un tableau JSON brut de 10 objets (pas de texte, pas de phrase, pas d’explication).
+
+                Voici le texte d’entrée :
+
+                <<<
+                {text}
+                >>>
+
+                ENVOIE LE RESULTAT SANS COMMENTAIRE, NI ESPACE, NI INTRODUCTION
+                """
         ),
         input_variables=["text"],
     )
@@ -22,18 +44,36 @@ class FAQGenerator:
                 for page in reader.pages:
                     text += page.extract_text()
             return text
+        
+        def repair_and_parse_json_array(output: str):
+            print('Attempting to repair and parse json array')
+            # Find all JSON objects individually
+            objects = re.findall(r'\{\s*"question"\s*:\s*".+?",\s*"answer"\s*:\s*".+?"\s*\}', output, re.DOTALL)
+
+            if not objects:
+                raise ValueError("No valid FAQ JSON objects found.")
+
+            # Reconstruct a proper JSON array
+            json_array_str = "[\n" + ",\n".join(objects) + "\n]"
+
+            try:
+                return json.loads(json_array_str)
+            except json.JSONDecodeError as e:
+                raise ValueError(f"JSON failed to parse after repairing json array: {e}")
+            
+        # Main AI out generator
         pdf_text = extract_text_from_pdf(uploaded_file)
         response = None
         try:
             print('Generating...')
             sequence = self.ai_prompt | self.llm
             response = sequence.invoke({"text": pdf_text})
-            response = response.strip()
             response = json.loads(response)
         except Exception as e:
-            print("Error during AI prompt generation:", e)
-        
-        if response: 
+            print("Error during AI prompt generation: ", e)
+            response = repair_and_parse_json_array(response)
+
+        if response:
             return response
 
-        print('Error getting AI response')
+        print('Error getting AI response!')        
