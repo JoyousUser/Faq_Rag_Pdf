@@ -7,7 +7,7 @@ class FAQGenerator:
     model_name = 'llama3'
     ai_prompt = PromptTemplate(
     template=(
-        """You are an AI assistant that extracts useful FAQs from a given text. Your task is to read the following content and generate a list of frequently asked questions (FAQs) with concise answers. Each FAQ should be a JSON object with the following format:{{"question": "A common or important question based on the text.","answer": "A concise, informative answer drawn from the text."}} Return the result as a JSON array of FAQ objects. Here is the input text: {text} Please return only the JSON array of FAQs, with no explanation or additional commentary."""
+        """You are a french AI assistant that extracts useful FAQs from a given text. Your task is to read the following content and generate a list of frequently asked questions (FAQs) with concise answers. Each FAQ should be a JSON object with the following format:{{"question": "A common or important question based on the text.","answer": "A concise, informative answer drawn from the text."}} Return the result as a JSON array of FAQ objects. Here is the input text: {text} Please return only the JSON array of FAQs, with no explanation or additional commentary."""
         ),
         input_variables=["text"],
     )
