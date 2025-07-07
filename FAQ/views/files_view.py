@@ -8,6 +8,7 @@ class UploadedFilesViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows faqs to be viewed or edited.
     """
+
     parser_classes = [MultiPartParser, FormParser]
     authentication_classes = [authentication.TokenAuthentication]
     queryset = UploadedFiles.objects.all()
@@ -17,14 +18,13 @@ class UploadedFilesViewSet(viewsets.ModelViewSet):
         """
         Instantiates and returns the list of permissions that this view requires.
         """
-        if self.action == 'create':
-            permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
 
-        elif self.action in ['list', 'retrieve']:
+        if self.action in ['list', 'retrieve']:
             permission_classes = [permissions.AllowAny]
         else:
             permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
         return [permission() for permission in permission_classes]
+    
     
     def perform_create(self, request):
         user = self.request.user

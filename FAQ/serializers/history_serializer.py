@@ -4,4 +4,4 @@ from rest_framework import serializers
 class HistorySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = History
-        fields = ['visisted', 'faq_id', 'visited_by', 'created_at']
+        fields = ['visited', 'faq_id', 'visited_by', 'created_at']
