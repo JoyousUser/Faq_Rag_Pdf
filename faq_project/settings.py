@@ -31,8 +31,9 @@ REST_FRAMEWORK = {
 
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',    # Auth via token (frontend)
-        'rest_framework.authentication.SessionAuthentication',          # Auth via login Google / Django
+        'authentication.backend_auth.authenticate.CustomAuthentication',               # Cookie JWT + CSRF
+        'rest_framework.authentication.SessionAuthentication',                     # Auth via login Google / Django
+        'rest_framework_simplejwt.authentication.JWTAuthentication',    # Auth via token (frontend) dans header (pour debug / Insomnia)
     ]
 }
 
@@ -44,6 +45,11 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
 
 GOOGLE_CALLBACK_URL = config('GOOGLE_CALLBACK_URL', default='http://localhost:5173/auth/callback')
+
+# === CSRF Settings ===
+CSRF_COOKIE_SAMESITE = "Lax"
+CSRF_COOKIE_HTTPONLY = False  # Important : doit être False pour que React puisse le lire
+CSRF_COOKIE_SECURE = False   # à passer à True uniquement en production (avec HTTPS)
 
 
 # Application definition
@@ -57,14 +63,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'FAQ',
+    'authentication',
     'rest_framework',
     'rest_framework.authtoken',
     'social_django'
 ]
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -130,7 +137,7 @@ AUTHENTICATION_BACKENDS = [
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = config('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY')
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = config('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET')
-LOGIN_REDIRECT_URL = '/api/token/google/'
+LOGIN_REDIRECT_URL = '/api/auth/token/google/'
 LOGOUT_REDIRECT_URL = '/'
 
 SIMPLE_JWT = {
@@ -146,6 +153,14 @@ SIMPLE_JWT = {
     'ALGORITHM': 'HS256',
     'SIGNING_KEY': SECRET_KEY,
     'LEEWAY': 0,
+
+    # === Cookie Custom Settings ===
+    'AUTH_COOKIE': 'access_token',  # Cookie name
+    'AUTH_COOKIE_DOMAIN': None,
+    'AUTH_COOKIE_SECURE': False,    # True in production only (HTTPS:// only)
+    'AUTH_COOKIE_HTTP_ONLY' : True, # Http only cookie flag.It's not fetch by javascript.
+    'AUTH_COOKIE_PATH': '/',        # The path of the auth cookie.
+    'AUTH_COOKIE_SAMESITE': 'Lax',
 }
 
 
@@ -182,3 +197,5 @@ else:
     CORS_ALLOWED_ORIGINS = [
         "https://faq-rag-pdf.vercel.app",   # à modifier pour le vrai nom de domaine une fois en prod
     ]
+
+CORS_ALLOWED_CREDENTIALS = True
