@@ -1,3 +1,0 @@
-from .faq_serializer import FaqSerializer
-from .files_serializer import UploadedFilesSerializer
-from .history_serializer import HistorySerializer
