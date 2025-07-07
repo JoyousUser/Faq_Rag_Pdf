@@ -33,9 +33,18 @@ class FAQGenerator:
         ),
         input_variables=["text"],
     )
-    llm = Ollama(model=model_name, timeout=120)
+
+    @property
+    def ai_model(self):
+        return self.model_name
+    
+    @ai_model.setter
+    def ai_model(self, model_name):
+        self.model_name = model_name
+    
 
     def generate_ai_prompt(self, uploaded_file):
+        llm = Ollama(model=self.model_name, timeout=120)
         print('Request recieved')
         def extract_text_from_pdf(uploaded_file):
             with open(uploaded_file, 'rb') as file:
@@ -66,7 +75,7 @@ class FAQGenerator:
         response = None
         try:
             print('Generating...')
-            sequence = self.ai_prompt | self.llm
+            sequence = self.ai_prompt | llm
             response = sequence.invoke({"text": pdf_text})
             response = json.loads(response)
         except Exception as e:

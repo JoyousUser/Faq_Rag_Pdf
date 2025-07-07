@@ -33,13 +33,13 @@ class FaqViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
     @action(detail=True, methods=["post"], url_path="generate", permission_classes=[permissions.IsAuthenticated, permissions.IsAdminUser])
-    def generate(self, *args, **kwargs):
+    def generate(self, request, *args, **kwargs):
         """
         Method to generate an FAQ using AI. \n
-        This method doesn't automatically save the FAQs to do that database, they need to be manually saved from the client side.
+        This method doesn't automatically save the FAQs to do that database, they need to be manually saved one by one, on the client side.
         """
         pk = self.kwargs.get("pk")
-
+        ai_model = request.data['ai_model']
         # Checking if file exists
         try:
             uploaded_file = UploadedFiles.objects.get(id=pk)
@@ -48,9 +48,13 @@ class FaqViewSet(viewsets.ModelViewSet):
         
         # Generating FAQs by Llama3
         try:
+            if ai_model:
+                print(ai_model)
+                self.Faq_ai_generator.ai_model = ai_model
             ai_generated_faqs = self.Faq_ai_generator.generate_ai_prompt(uploaded_file=str(uploaded_file.file_path))
         except Exception as e:
-            return Response({"message": "Server side error while generating the FAQs"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            print(e)
+            return Response({"message": f"Server side error while generating the FAQs or AI model {ai_model} is not available."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
         return Response(ai_generated_faqs, status=status.HTTP_200_OK)
         
