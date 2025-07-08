@@ -44,7 +44,7 @@ pydantic_core==2.33.2
 PyJWT==2.9.0
 PyPDF2==3.0.1
 python-decouple==3.8
-python-dotenv==1.1.0
+python-dotenv==1.1.1
 python3-openid==3.2.0
 PyYAML==6.0.2
 requests==2.32.4
