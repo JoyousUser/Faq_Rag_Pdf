@@ -1,10 +1,20 @@
 from django.db import models
 from langchain.prompts import PromptTemplate
-from langchain_community.llms.ollama import Ollama 
+from langchain_community.llms.ollama import Ollama
+from langchain.output_parsers import PydanticOutputParser 
+from pydantic import BaseModel, Field
 import PyPDF2, json, re
 
 class FAQGenerator:
     model_name = 'llama3'
+    class FAQ(BaseModel):
+            question: str = Field(description='FAQ question')
+            answer: str = Field(description='FAQ réponse')
+
+            model_config = {
+                "from_attributes": True
+            }
+    output_parser = PydanticOutputParser(pydantic_object=FAQ)
     ai_prompt = PromptTemplate(
     template=(
                """
@@ -15,10 +25,7 @@ class FAQGenerator:
                 - Génère exactement 10 objets JSON représentant des FAQ.
                 - Chaque objet doit avoir cette structure (et rien d'autre) :
 
-                {{
-                "question": "Une question fréquente basée sur le texte.",
-                "answer": "Une réponse concise et informative tirée du texte."
-                }}
+                {format_instructions}
 
                 TRÈS IMPORTANT : Tu dois renvoyer UNIQUEMENT un tableau JSON brut de 10 objets (pas de texte, pas de phrase, pas d’explication).
 
@@ -32,6 +39,7 @@ class FAQGenerator:
                 """
         ),
         input_variables=["text"],
+        partial_variables={"format_instructions": output_parser.get_format_instructions()},
     )
 
     @property
@@ -53,6 +61,7 @@ class FAQGenerator:
                 for page in reader.pages:
                     text += page.extract_text()
             return text
+        
         
         def repair_and_parse_json_array(output: str):
             print('Attempting to repair and parse json array')
@@ -80,7 +89,7 @@ class FAQGenerator:
             response = json.loads(response)
         except Exception as e:
             print("Error during AI prompt generation: ", e)
-            response = repair_and_parse_json_array(response)
+            # response = repair_and_parse_json_array(response)
 
         if response:
             return response
