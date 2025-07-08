@@ -4,4 +4,6 @@ from rest_framework import serializers
 class UploadedFilesSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = UploadedFiles
-        fields = ['file_path', 'created_at', 'created_by']
+        fields = ['file_path']
+        read_only_fields = ['created_by', 'created_at']
+

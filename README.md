@@ -5,20 +5,30 @@ Postman/Insomnia -> API testing
 
 - Start a python virtual environment:
 
-`python.exe -m venv .venv`
+```bash
+python.exe -m venv .venv
+```
 
 - Before running the app please install the requirements:
 
-`python.exe -m pip install -r requirements.txt`
+```bash
+python.exe -m pip install -r requirements.txt
+```
 
 - Migrate database :
 
-`python.exe ./manage.py migrate`
+```bash
+python.exe ./manage.py migrate
+```
 
 - To run the app please run :
 
-`python.exe ./manage.py runserver`
+```bash
+python.exe ./manage.py runserver
+```
 
 - To run unitary tests please run :
 
-`python.exe ./manage.py test`
+```bash
+python.exe ./manage.py test
+```
