@@ -31,9 +31,9 @@ REST_FRAMEWORK = {
 
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'authentication.backend_auth.authenticate.CustomAuthentication',               # Cookie JWT + CSRF
+        'rest_framework_simplejwt.authentication.JWTAuthentication', # Auth via token (frontend) dans header (pour debug / Insomnia)
         'rest_framework.authentication.SessionAuthentication',                     # Auth via login Google / Django
-        'rest_framework_simplejwt.authentication.JWTAuthentication',    # Auth via token (frontend) dans header (pour debug / Insomnia)
+        'authentication.backend_auth.authenticate.CustomAuthentication',               # Cookie JWT + CSRF
     ]
 }
 
@@ -72,7 +72,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'social_django',
-    'corsheaders'
 ]
 
 MIDDLEWARE = [
@@ -193,16 +192,5 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-if DEBUG:
-    CORS_ALLOWED_ORIGINS = [
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-        "http://localhost8000",
-    ]
-else:
-    CORS_ALLOWED_ORIGINS = [
-        "https://faq-rag-pdf.vercel.app",   # à modifier pour le vrai nom de domaine une fois en prod
-    ]
 
 CORS_ALLOWED_CREDENTIALS = True

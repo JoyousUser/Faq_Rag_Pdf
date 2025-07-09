@@ -1,4 +1,4 @@
-from rest_framework import viewsets, permissions, authentication, status
+from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from ..models import Faq, UploadedFiles
@@ -10,21 +10,13 @@ class FaqViewSet(viewsets.ModelViewSet):
     API endpoint that allows faqs to be viewed or edited.
     """
     queryset = Faq.objects.all()
-    serializer_class = FaqSerializer
     Faq_ai_generator = FAQGenerator()
-
-    def get_permissions(self):
-        """
-        Instantiates and returns the list of permissions that this view requires.
-        """
-        if self.action in ['list', 'retrieve']:
-            permission_classes = [permissions.AllowAny]
-        else:
-            permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
-        return [permission() for permission in permission_classes]
-
-    def perform_create(self, request):
+    serializer_class = FaqSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def create(self, request):
         user = request.user
+        print(user)
         faq = Faq.objects.create(author=user, question=request.data.get('question'), answer=request.data.get('answer'), generation='Manual')
         serializer = FaqSerializer(faq, context={'request': request})
         return Response(serializer.data, status=status.HTTP_201_CREATED)
