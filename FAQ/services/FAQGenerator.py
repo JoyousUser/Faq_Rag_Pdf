@@ -87,7 +87,7 @@ class FAQGenerator:
             sequence = self.ai_prompt | llm
             response = sequence.invoke({"text": pdf_text})
             response = json.loads(response)
-        except Exception as e:
+        except json.JSONDecodeError as e:
             print("Error during AI prompt generation: ", e)
             # response = repair_and_parse_json_array(response)
 
