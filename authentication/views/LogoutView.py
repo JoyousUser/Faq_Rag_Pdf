@@ -18,6 +18,7 @@ class GoogleLogoutView(APIView):
             domain=settings.SIMPLE_JWT.get('AUTH_COOKIE_DOMAIN', None),
             samesite=settings.SIMPLE_JWT.get('AUTH_COOKIE_SAMESITE', 'Lax'),
         )
+        response.delete_cookie('sessionid')
         response.delete_cookie('refresh_token')
 
 

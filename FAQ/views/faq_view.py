@@ -12,11 +12,17 @@ class FaqViewSet(viewsets.ModelViewSet):
     queryset = Faq.objects.all()
     Faq_ai_generator = FAQGenerator()
     serializer_class = FaqSerializer
-    permission_classes = [permissions.IsAuthenticated]
+
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            permission_classes = [permissions.AllowAny]
+        else:
+            permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+        return [permission() for permission in permission_classes]
+        
     
     def create(self, request):
         user = request.user
-        print(user)
         faq = Faq.objects.create(author=user, question=request.data.get('question'), answer=request.data.get('answer'), generation='Manual')
         serializer = FaqSerializer(faq, context={'request': request})
         return Response(serializer.data, status=status.HTTP_201_CREATED)
