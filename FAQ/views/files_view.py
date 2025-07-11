@@ -9,9 +9,10 @@ class UploadedFilesViewSet(viewsets.ModelViewSet):
     API endpoint that allows faqs to be viewed or edited.
     """
 
-    parser_classes = [MultiPartParser, FormParser]
     queryset = UploadedFiles.objects.all()
+    parser_classes = [MultiPartParser, FormParser]
     serializer_class = UploadedFilesSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_permissions(self):
         """
