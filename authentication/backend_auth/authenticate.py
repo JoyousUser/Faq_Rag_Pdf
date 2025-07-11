@@ -25,5 +25,5 @@ class CustomAuthentication(JWTAuthentication):
             return None
 
         validate_token = self.get_validated_token(raw_token)
-        enforce_csrf(request)
+        # enforce_csrf(request)         # pas nécessaire pour un logout
         return self.get_user(validate_token), validate_token

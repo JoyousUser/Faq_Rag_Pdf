@@ -10,7 +10,6 @@ class UploadedFilesViewSet(viewsets.ModelViewSet):
     """
 
     parser_classes = [MultiPartParser, FormParser]
-    authentication_classes = [authentication.TokenAuthentication]
     queryset = UploadedFiles.objects.all()
     serializer_class = UploadedFilesSerializer
 
