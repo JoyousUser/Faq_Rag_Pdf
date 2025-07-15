@@ -89,7 +89,7 @@ class FAQGenerator:
             response = json.loads(response)
         except json.JSONDecodeError as e:
             print("Error during AI prompt generation: ", e)
-            # response = repair_and_parse_json_array(response)
+            response = repair_and_parse_json_array(response)
 
         if response:
             return response
