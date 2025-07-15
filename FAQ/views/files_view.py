@@ -1,4 +1,4 @@
-from rest_framework import viewsets, permissions, authentication, status
+from rest_framework import viewsets, permissions, status
 from rest_framework.parsers import MultiPartParser, FormParser
 from ..models import UploadedFiles
 from ..serializers import UploadedFilesSerializer
@@ -14,13 +14,13 @@ class UploadedFilesViewSet(viewsets.ModelViewSet):
     serializer_class = UploadedFilesSerializer
     permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
     
-    def perform_create(self, request):
+    def create(self, request):
         user = self.request.user
         uploaded_file = self.request.FILES.get('file_path')
         if not uploaded_file:
             return Response({'error': 'No file provided'}, status=status.HTTP_400_BAD_REQUEST)
         
-        file = UploadedFiles.objects.create(file_path=uploaded_file, created_by=user)
+        file = UploadedFiles.objects.create(file_path=uploaded_file, created_by=user, file_name=uploaded_file.name)
         serializer = UploadedFilesSerializer(file, context={'request': request})
-         
+
         return Response(status=status.HTTP_201_CREATED)

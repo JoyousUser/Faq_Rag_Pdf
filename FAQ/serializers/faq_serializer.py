@@ -4,7 +4,7 @@ from rest_framework import serializers
 class FaqSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Faq
-        fields = ['author', 'updated_at', 'created_at', 'question', 'answer', 'generation']
+        fields = ['id', 'author', 'updated_at', 'created_at', 'question', 'answer', 'generation']
         
     # json example of an FAQ
     # {

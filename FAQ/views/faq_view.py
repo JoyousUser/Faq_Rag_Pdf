@@ -23,7 +23,7 @@ class FaqViewSet(viewsets.ModelViewSet):
     
     def create(self, request):
         user = request.user
-        faq = Faq.objects.create(author=user, question=request.data.get('question'), answer=request.data.get('answer'), generation='Manual')
+        faq = Faq.objects.create(author=user, question=request.data.get('question'), answer=request.data.get('answer'), generation=request.data.get('generation'))
         serializer = FaqSerializer(faq, context={'request': request})
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
