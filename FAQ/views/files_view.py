@@ -12,7 +12,12 @@ class UploadedFilesViewSet(viewsets.ModelViewSet):
     queryset = UploadedFiles.objects.all()
     parser_classes = [MultiPartParser, FormParser]
     serializer_class = UploadedFilesSerializer
-    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            permission_classes = [permissions.AllowAny]
+        else:
+            permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+        return [permission() for permission in permission_classes]
     
     def create(self, request):
         user = self.request.user

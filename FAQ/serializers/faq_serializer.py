@@ -6,6 +6,7 @@ class FaqSerializer(serializers.ModelSerializer):
     class Meta:
         model = Faq
         fields = ['id', 'author', 'updated_at', 'created_at', 'question', 'answer', 'generation', 'file']
+        read_only_fields = ['author', 'created_at', 'updated_at']
 
     def get_file(self, obj):
         from . import UploadedFilesSerializer  
