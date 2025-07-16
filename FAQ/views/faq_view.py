@@ -23,7 +23,9 @@ class FaqViewSet(viewsets.ModelViewSet):
     
     def create(self, request):
         user = request.user
-        faq = Faq.objects.create(author=user, question=request.data.get('question'), answer=request.data.get('answer'), generation=request.data.get('generation'))
+        uploaded_file = UploadedFiles.objects.get(id=request.data.get('file_id'))
+
+        faq = Faq.objects.create(author=user, question=request.data.get('question'), answer=request.data.get('answer'), generation=request.data.get('generation'), file=uploaded_file)
         serializer = FaqSerializer(faq, context={'request': request})
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 

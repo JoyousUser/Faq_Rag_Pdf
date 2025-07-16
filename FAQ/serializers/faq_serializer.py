@@ -1,11 +1,23 @@
 from FAQ.models import Faq
 from rest_framework import serializers
 
-class FaqSerializer(serializers.HyperlinkedModelSerializer):
+class FaqSerializer(serializers.ModelSerializer):
+    file = serializers.SerializerMethodField()
     class Meta:
         model = Faq
-        fields = ['id', 'author', 'updated_at', 'created_at', 'question', 'answer', 'generation']
-        
+        fields = ['id', 'author', 'updated_at', 'created_at', 'question', 'answer', 'generation', 'file']
+
+    def get_file(self, obj):
+        from . import UploadedFilesSerializer  
+        if obj.file:
+            return UploadedFilesSerializer(obj.file).data
+        return None
+    
+    def get_author(self, obj):
+        from . import UserSerializer
+        if obj.author: 
+            return UserSerializer(obj.author).data
+        return None
     # json example of an FAQ
     # {
     #     "id": 1,

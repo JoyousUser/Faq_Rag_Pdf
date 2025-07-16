@@ -16,7 +16,7 @@ class Faq(models.Model):
     question = models.TextField()
     answer = models.TextField()
     generation = models.CharField(choices=generation_choices, max_length=6, default='Manual')
-    file = models.ForeignKey(UploadedFiles, on_delete=models.SET_NULL, null=True, blank=True, related_name='faqs')
+    file = models.ForeignKey('UploadedFiles', on_delete=models.SET_NULL, null=True, blank=True, related_name='faqs')
 
     def __str__(self):
         return f"{self.question} - {self.answer} ({self.generation})"
