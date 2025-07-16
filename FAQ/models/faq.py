@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from . import UploadedFiles
 
 class Faq(models.Model):
 
@@ -14,8 +15,8 @@ class Faq(models.Model):
     validated = models.BooleanField(default=False)
     question = models.TextField()
     answer = models.TextField()
-    generation = models.CharField(choices=generation_choices, max_length=6, default='AI')
-
+    generation = models.CharField(choices=generation_choices, max_length=6, default='Manual')
+    file = models.ForeignKey(UploadedFiles, on_delete=models.SET_NULL, null=True, blank=True, related_name='faqs')
 
     def __str__(self):
         return f"{self.question} - {self.answer} ({self.generation})"
