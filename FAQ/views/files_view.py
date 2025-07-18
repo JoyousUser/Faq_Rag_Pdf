@@ -1,5 +1,6 @@
 from rest_framework import viewsets, permissions, status
 from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.decorators import action
 from ..models import UploadedFiles
 from ..serializers import UploadedFilesSerializer
 from rest_framework.response import Response
@@ -29,3 +30,8 @@ class UploadedFilesViewSet(viewsets.ModelViewSet):
         serializer = UploadedFilesSerializer(file, context={'request': request})
 
         return Response(status=status.HTTP_201_CREATED)
+
+    @action(detail=False, methods=['get'], url_path='count', permission_classes=[permissions.IsAuthenticated, permissions.IsAdminUser])
+    def count_files(self, request):
+        count = UploadedFiles.objects.count()
+        return Response({"count": count})

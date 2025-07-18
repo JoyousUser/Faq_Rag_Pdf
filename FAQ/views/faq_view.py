@@ -35,6 +35,11 @@ class FaqViewSet(viewsets.ModelViewSet):
         faq = Faq.objects.create(author=user, question=request.data.get('question'), answer=request.data.get('answer'), generation=request.data.get('generation'), file=uploaded_file)
         serializer = FaqSerializer(faq, context={'request': request})
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+    @action(detail=False, methods=['get'], url_path='count', permission_classes=[permissions.IsAuthenticated, permissions.IsAdminUser])
+    def count_faqs(self, request):
+        count = Faq.objects.count()
+        return Response({"count": count})
 
     
     @action(detail=True, methods=["get"], url_path="generate", permission_classes=[permissions.IsAuthenticated, permissions.IsAdminUser])
