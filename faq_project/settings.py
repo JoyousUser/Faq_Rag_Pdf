@@ -27,9 +27,13 @@ REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
-        'rest_framework_simplejwt.authentication.JWTAuthentication',    # Auth via token (frontend)
-        'rest_framework.authentication.SessionAuthentication',          # Auth via login Google / Django
+        'rest_framework.permissions.IsAuthenticated',
+
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'authentication.backend_auth.authenticate.CustomAuthentication',               # Cookie JWT + CSRF
+        'rest_framework.authentication.SessionAuthentication',                     # Auth via login Google / Django
+        'rest_framework_simplejwt.authentication.JWTAuthentication',    # Auth via token (frontend) dans header (pour debug / Insomnia)
     ]
 }
 
@@ -41,9 +45,22 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
 
 
+GOOGLE_CALLBACK_URL = config('GOOGLE_CALLBACK_URL', default='http://localhost:5173/auth/callback')
+
+# === CSRF Settings ===
+CSRF_COOKIE_SAMESITE = "Lax"
+CSRF_COOKIE_HTTPONLY = False  # Important : doit être False pour que React puisse le lire
+CSRF_COOKIE_SECURE = False   # à passer à True uniquement en production (avec HTTPS)
+CSRF_TRUSTED_ORIGINS = config('CSRF_TRUSTED_ORIGINS', cast=Csv())
+
+CORS_ALLOWED_ORIGINS = config('CORS_ALLOWED_ORIGINS', cast=Csv())
+
+
+
 # Application definition
 
 INSTALLED_APPS = [
+    'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -51,14 +68,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'FAQ',
+    'authentication',
     'rest_framework',
     'rest_framework.authtoken',
-    'FAQ.apps.FaqConfig',
-    'rest_framework',
-    'social_django'
+    'social_django',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -125,7 +142,7 @@ AUTHENTICATION_BACKENDS = [
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = config('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY')
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = config('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET')
-LOGIN_REDIRECT_URL = '/'    # TODO routes à changer quand on aura nos vues (les vraies, les templates)
+LOGIN_REDIRECT_URL = '/api/auth/token/google/'
 LOGOUT_REDIRECT_URL = '/'
 
 SIMPLE_JWT = {
@@ -141,6 +158,14 @@ SIMPLE_JWT = {
     'ALGORITHM': 'HS256',
     'SIGNING_KEY': SECRET_KEY,
     'LEEWAY': 0,
+
+    # === Cookie Custom Settings ===
+    'AUTH_COOKIE': 'access_token',  # Cookie name
+    'AUTH_COOKIE_DOMAIN': None,
+    'AUTH_COOKIE_SECURE': False,    # True in production only (HTTPS:// only)
+    'AUTH_COOKIE_HTTP_ONLY' : True, # Http only cookie flag.It's not fetch by javascript.
+    'AUTH_COOKIE_PATH': '/',        # The path of the auth cookie.
+    'AUTH_COOKIE_SAMESITE': 'Lax',
 }
 
 
@@ -166,3 +191,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+CORS_ALLOW_CREDENTIALS = True
