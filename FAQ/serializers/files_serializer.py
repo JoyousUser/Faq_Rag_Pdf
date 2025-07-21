@@ -1,9 +1,10 @@
 from FAQ.models import UploadedFiles
 from rest_framework import serializers
 
-class UploadedFilesSerializer(serializers.HyperlinkedModelSerializer):
+class UploadedFilesSerializer(serializers.ModelSerializer):
+    
     class Meta:
         model = UploadedFiles
-        fields = ['file_path']
-        read_only_fields = ['created_by', 'created_at']
+        fields = ['id', 'file_name','file_path', 'created_at', 'created_by', 'faqs']
+        read_only_fields = ['created_at', 'created_by', 'faqs']
 

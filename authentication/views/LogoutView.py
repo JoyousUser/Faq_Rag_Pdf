@@ -9,19 +9,17 @@ from faq_project import settings
 class GoogleLogoutView(APIView):
     permission_classes = [permissions.AllowAny]
 
-    def options(self, request, *args, **kwargs):
-        response = JsonResponse({});
-        response["Access-Control-Allow-Origin"] = "http://localhost:5173"
-        response["Access-Control-Allow-Credentials"] = "true"
-        response["Access-Control-Allow-Methods"] = "POST, OPTIONS"
-        response["Access-Control-Allow-Headers"] = "Content-Type"
-
     def post(self, request):
         response = JsonResponse({"message": "Logged out successfully"})
         response.delete_cookie("csrftoken")
-        response.delete_cookie(settings.SIMPLE_JWT.get('AUTH_COOKIE'))
+        response.delete_cookie(
+            settings.SIMPLE_JWT.get('AUTH_COOKIE'),
+            path=settings.SIMPLE_JWT.get('AUTH_COOKIE_PATH', '/'),
+            domain=settings.SIMPLE_JWT.get('AUTH_COOKIE_DOMAIN', None),
+            samesite=settings.SIMPLE_JWT.get('AUTH_COOKIE_SAMESITE', 'Lax'),
+        )
+        response.delete_cookie('sessionid')
         response.delete_cookie('refresh_token')
 
-        response["Access-Control-Allow-Credentials"] = "true"
 
         return response

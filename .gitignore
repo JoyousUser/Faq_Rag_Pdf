@@ -343,4 +343,12 @@ $RECYCLE.BIN/
 # End of https://www.toptal.com/developers/gitignore/api/django,linux,python,windows,macos
 .venv/
 
+
 workspace.xml
+
+/.idea/Faq_Rag_Pdf.iml
+/.idea/misc.xml
+/.idea/inspectionProfiles/profiles_settings.xml
+/.idea/vcs.xml
+.idea
+

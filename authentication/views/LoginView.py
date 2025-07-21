@@ -28,7 +28,7 @@ class GoogleJWTAPIView(APIView):
             "csrf_token": csrf_token,
         })
         response.status_code = 302
-        response["Location"] = "http://localhost:5173/protected"
+        response["Location"] = "http://localhost:5173/"
         response["Access-Control-Allow-Credentials"] = "true"
 
         cookie_name = settings.SIMPLE_JWT.get('AUTH_COOKIE')
