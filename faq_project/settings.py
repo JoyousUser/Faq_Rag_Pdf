@@ -84,6 +84,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'social_django.middleware.SocialAuthExceptionMiddleware',
+    'FAQ.middleware.VisitLogMiddleware.VisitLogMiddleware',
 ]
 
 ROOT_URLCONF = 'faq_project.urls'
